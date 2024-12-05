@@ -29,21 +29,30 @@ int main(int argc, char **argv) {
         //exit(1);
     }
 
-    int opt, depth;
+    // If the correct number of command-line arguments and the correct options 
+    // (-f and -d are provided), you may assume that the values corresponding 
+    // with the options are valid
+
+    int opt;
     while ((opt = getopt(argc, argv, "f:d:")) != -1) {
         switch (opt) {
             case 'f':
-                filename = optarg;  // Store filename argument
+                filename = optarg;  
                 break;
             case 'd':
-                depth = atoi(optarg);  // Convert depth argument to integer
-                break;
-             case '?':
-             default:
+                char *endptr;
+                pdepth = strtol(optarg, &endptr, 10);
+                break; // You may assume that pdepth will be less than or equal to 8.
+            case '?':
+            default:
                 print_usage();
         }
     }
 
+    // Ensure both options -f and -d are provided
+    if (!filename || pdepth == -1) {
+        print_usage();
+    }
 
 
     // Read the points
