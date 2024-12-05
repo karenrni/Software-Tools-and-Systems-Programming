@@ -35,13 +35,13 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
         exit(1);
     }
     // Fork left child 
-    pid_t pid_left = fork();
+    int leftResult = fork();
 
-    if (pid_left < 0) { 
+    if (leftResult == -1) { 
         perror("fork");
         exit(1);
 
-    } else if (pid_left == 0) {
+    } else if (leftResult == 0) {
         if (close(leftPipe[0]) == -1) {
             perror("close reading end from inside left child");
             exit(1);
@@ -74,13 +74,13 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
         exit(1);
     }
     // Fork right child 
-    pid_t pid_right = fork();
+    int rightResult = fork();
 
-    if (pid_right < 0) {  
+    if (rightResult == -1) {  
         perror("fork");
         exit(1);
 
-    } else if (pid_right == 0) {
+    } else if (rightResult == 0) {
         if (close(rightPipe[0]) == -1) {
             perror("close reading end from inside right child");
             exit(1);
@@ -107,6 +107,68 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
         }
     }
 
-    return 0.0;
+    // 4: Wait for both children 
+    int status;
+    for (int i = 0; i < 2; i++) {
+        if (wait(&status) == -1) {
+            perror("wait");
+            exit(1);
+        }
+        if (WIFEXITED(status)) {
+            // Add worker process count from child exit status
+            *pcount += WEXITSTATUS(status);  
+        }
+    }
+
+    // 5: Read results 
+    double left_distance, right_distance;
+
+    if (read(leftPipe[0], &left_distance, sizeof(double)) != sizeof(double)) {
+        perror("read from left pipe");
+        exit(1);
+    }
+    if (close(leftPipe[0]) == -1) {
+        perror("close reading end of left pipe in parent");
+        exit(1);
+    }
+
+    if (read(rightPipe[0], &right_distance, sizeof(double)) != sizeof(double)) {
+        perror("read from right pipe");
+        exit(1);
+    }
+    if (close(rightPipe[0]) == -1) {
+        perror("close reading end of right pipe in parent");
+        exit(1);
+    }
+
+    // 6: step 4 from the single-process recursive divide-and-conquer solution
+    
+    double d = min(left_distance, right_distance);
+
+    struct Point *strip = malloc(sizeof(struct Point) * n);
+    if (!strip) {
+        perror("malloc");
+        exit(1);
+    }
+    // Make strip with points near the line passing through the middle point
+    int strip_count = 0;
+    for (int i = 0; i < n; i++) {
+        if (abs(p[i].x - p[midpoint].x) < d) {
+            strip[strip_count++] = p[i];
+        }
+    }
+
+    // Sort strip by y
+    qsort(strip, strip_count, sizeof(struct Point), compare_y);
+
+    // 7: Find the closest points in strip
+    double strip_distance = strip_closest(strip, strip_count, d);
+
+    free(strip);
+
+    if (strip_distance < d) {
+        d = strip_distance;
+    }
+    return d;
 }
 
