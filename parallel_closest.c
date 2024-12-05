@@ -59,6 +59,7 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
             perror("close lefts' pipe after writing");
             exit(1);
         } 
+        (*pcount)++;
         exit(*pcount); // Exit with status num worker processes
 
     } else {  // in parent
@@ -98,6 +99,7 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
             perror("close right's pipe after writing");
             exit(1);
         } 
+        (*pcount)++;
         exit(*pcount); // Exit with status num worker processes
 
     } else {  // in parent
@@ -163,12 +165,7 @@ double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
 
     // 7: Find the closest points in strip
     double strip_distance = strip_closest(strip, strip_count, d);
-
     free(strip);
-
-    if (strip_distance < d) {
-        d = strip_distance;
-    }
-    return d;
+    return min(d, strip_distance);
 }
 
