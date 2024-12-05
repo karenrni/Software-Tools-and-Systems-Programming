@@ -17,7 +17,10 @@
  * Assumes that the array p[] is sorted according to x coordinate.
  */
 double closest_parallel(struct Point *p, int n, int pdmax, int *pcount) {
-    
+    if (pdmax == 0) {
+        *pcount = 0; // No worker processes
+        return closest_serial(p, n);
+    }
     return 0.0;
 }
 
