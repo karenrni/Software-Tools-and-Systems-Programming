@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     int pcount = 0;
 
     //Parse the command line arguments
-    if (argc != 2) {
+    if (argc != 5) {
         print_usage();
         //exit(1);
     }
@@ -33,16 +33,19 @@ int main(int argc, char **argv) {
     // (-f and -d are provided), you may assume that the values corresponding 
     // with the options are valid
 
+    // You may assume that pdepth will be less than or equal to 8.
+
     int opt;
     while ((opt = getopt(argc, argv, "f:d:")) != -1) {
         switch (opt) {
             case 'f':
                 filename = optarg;  
                 break;
-            case 'd':
+            case 'd': {
                 char *endptr;
                 pdepth = strtol(optarg, &endptr, 10);
-                break; // You may assume that pdepth will be less than or equal to 8.
+                break;
+            }
             case '?':
             default:
                 print_usage();
@@ -53,7 +56,6 @@ int main(int argc, char **argv) {
     if (!filename || pdepth == -1) {
         print_usage();
     }
-
 
     // Read the points
     n = total_points(filename);
