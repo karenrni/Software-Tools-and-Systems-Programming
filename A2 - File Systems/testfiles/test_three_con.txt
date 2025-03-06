@@ -1,0 +1,11 @@
+i myfs
+
+c file1 8 aaaaaaaa
+c file2 8 bbbbbbbb
+c file3 8 cccccccc
+
+d file1
+d file2
+d file3
+
+s

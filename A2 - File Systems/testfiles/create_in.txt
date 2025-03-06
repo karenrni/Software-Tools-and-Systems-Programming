@@ -1,0 +1,3 @@
+i myfs
+c file1 8 aaaaaaaa
+p

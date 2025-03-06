@@ -1,0 +1,19 @@
+This directory contains some example input files for the ffsim and bfsim 
+programs.  The corresponding .out files are the result of running ffsim
+on the input file.
+create_in.txt  init_in.txt  README  test_diagram  test_diagram.out  test_init
+
+init_in.txt - the simplest transaction file that creates an empty file system
+    - this test will produce the correct output with only the starter code
+create_in.txt - create one file
+    - with the the starter code, the correct metadata will be set, but the 
+    freelist will be incorrect and the file data will not be stored in the 
+    data portion of the disk
+test_diagram.txt - the transaction file used for the diagrams in the handout
+test_diagram.txt - the expected output for the test_diagram.txt (The results
+    are the same for both ffsim and bfsim
+test_sample.txt - the transaction file from the handout
+test_sample.out - the result of running `./ffsim testfiles/test_sample.txt` 
+
+NOTE: When you run the starter code on these transaction files, you will NOT
+get the same output, except init_in.txt

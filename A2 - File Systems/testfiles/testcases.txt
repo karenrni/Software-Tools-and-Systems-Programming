@@ -1,0 +1,31 @@
+Test 1: Create 4 consecutive files, delete three files 
+Transaction file: test_four.txt
+Tests the creation of four consecutive files and deletion of three of them. 
+Verifies that the free list correctly merges 2 separate, adjacent free blocks when files 
+are deleted, creating a contiguous free block.
+
+Test 2: Create 3 consecutive files, delete all but middle files (file adjacent to both other files)
+Transaction file: test_non_con.txt
+Tests that 3 consecutive files are created, and the freelist is updated correctly.
+When each file is deleted, the freelist will increase by a node, as no merging occurs.
+
+Test 3: Create 3 consecutive files, delete all 
+Transaction file: test_three_con.txt
+Tests that three consecutive files are created and the freelist merges all 
+blocks when after each file is deleted
+
+Test 4: Create multiple files, delete selected files 
+Transaction file: test_first_fit.txt
+Tests that get_free_block with first fit finds the first available free space, 
+over better, later blocks. 
+
+Test 5: Create files with different sizes, delete selected files
+Transaction file: test_best.txt
+Tests that get_free_block using best fit finds the smallest available free space,
+which is the only space with exact fit.  
+
+Test 6: Fragmented space, attempt to create an oversized file
+Transaction file: test_no_fit.txt
+Tests that get_free_block in either first or best fit 
+handles cases where no free block is large enough for a new file,
+meaning a return value of -1 is recieved in place of a block.
